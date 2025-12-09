@@ -17,53 +17,54 @@
             }
         };
 
-        // Mapping for letters to corresponding values
+        // Mapping for letters to corresponding values (3 characters each)
         const letterMap = {
-            'A': 'B3',
-            'B': 'C5',
-            'C': 'D8',
+            'A': 'B03',
+            'B': 'C05',
+            'C': 'D08',
             'D': 'E10',
             'E': 'F13',
             'F': 'G15',
-            'Z': '77'
+            'Z': '077'
         };
+
+        // Reverse map for decoding
+        const letterMapReverse = Object.fromEntries(
+            Object.entries(letterMap).map(([k, v]) => [v, k])
+        );
 
         // Function to generate a random password from the letters A B C D E F Z (5 letters)
         function generateRandomPassword() {
-            const characters = ['A', 'B', 'C', 'D', 'E', 'F', 'Z'];
+            const characters = Object.keys(letterMap);
             const passwordLength = 5;  // The password will have 5 letters
             let password = '';
-            
+
             // Generate a random password by selecting 5 random letters
             for (let i = 0; i < passwordLength; i++) {
                 let randomIndex = Math.floor(Math.random() * characters.length);
                 password += characters[randomIndex];
             }
 
-            // Store the random password in sessionStorage
-            sessionStorage.setItem('generatedPassword', password);
+            // Convert the password letters to their corresponding encoded values
+            let encodedPassword = password.split('').map(l => letterMap[l]).join('');
 
-            // Convert the password letters to their corresponding values
-            let encodedPassword = password.split('').map(letter => letterMap[letter]).join('');
-            
-            // Store the encoded password for validation
+            // Store the generated password and its encoded version
+            sessionStorage.setItem('generatedPassword', password);
             sessionStorage.setItem('encodedPassword', encodedPassword);
 
-            askForPassword(password);  // Show password prompt with letters
+            askForPassword(password);  // Prompt the user for the password
         }
 
         // Function to prompt for the password and validate it
         function askForPassword(password) {
             let encodedPassword = sessionStorage.getItem('encodedPassword'); // Get the encoded password
-            var userPassword = prompt("Please enter the password: " + password);
-            
+            var userPassword = prompt("Please enter the password: " + password); // User is given the password letters to decode
+
             // Check if the entered password matches the encoded password
             if (encodePasswordInput(userPassword) === encodedPassword) {
-                // If password is correct, show the content and store flag in sessionStorage
                 sessionStorage.setItem('passwordEntered', 'true');
                 document.getElementById("content").style.display = "block";
             } else {
-                // If password is incorrect, redirect to a blank page
                 alert("Incorrect password. Redirecting...");
                 window.location.href = "about:blank"; // Prevent bypass by redirecting to a blank page
             }
@@ -71,22 +72,7 @@
 
         // Function to encode user input into mapped values
         function encodePasswordInput(input) {
-            const letterMapReverse = {
-                'B3': 'A',
-                'C5': 'B',
-                'D8': 'C',
-                'E10': 'D',
-                'F13': 'E',
-                'G15': 'F',
-                '77': 'Z'
-            };
-            
-            let inputLetters = '';
-            for (let i = 0; i < input.length; i += 3) {
-                let segment = input.slice(i, i + 3); // Extract 3 characters (like B3, C5, etc.)
-                inputLetters += letterMapReverse[segment] || ''; // Convert mapped value to letter
-            }
-            return inputLetters;
+            return input.split('').map(l => letterMap[l] || '').join('');
         }
     </script>
     <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837" crossorigin="anonymous"></script>
