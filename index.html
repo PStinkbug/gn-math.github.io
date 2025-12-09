@@ -37,8 +37,8 @@
 
         // Function to generate a random password from the letters A B C D E F Z (5 letters)
         function generateRandomPassword() {
-            const characters = Object.keys(letterMap);
-            const passwordLength = 5;  // The password will have 5 letters
+            const characters = Object.keys(letterMap);  // A, B, C, D, E, F, Z
+            const passwordLength = 5;
             let password = '';
 
             // Generate a random password by selecting 5 random letters
@@ -50,7 +50,11 @@
             // Convert the password letters to their corresponding encoded values
             let encodedPassword = password.split('').map(l => letterMap[l]).join('');
 
-            // Store the generated password and its encoded version
+            // Debugging: Log the generated password and encoded version
+            console.log("Generated Password (Plain):", password);
+            console.log("Encoded Password (Encoded):", encodedPassword);
+
+            // Store the generated password and its encoded version in sessionStorage
             sessionStorage.setItem('generatedPassword', password);
             sessionStorage.setItem('encodedPassword', encodedPassword);
 
@@ -62,16 +66,20 @@
             let encodedPassword = sessionStorage.getItem('encodedPassword'); // Get the encoded password
             var userPassword = prompt("Please enter the password: " + password); // User is given the password letters to decode
 
+            // Debugging: Log user input and encoded values
             console.log("Entered Password (raw):", userPassword);
             console.log("Encoded Password (stored):", encodedPassword);
 
             // Encode the user input and compare with stored encoded password
             const encodedUserInput = encodePasswordInput(userPassword);
+
+            // Debugging: Log the encoded version of the user's input
             console.log("Encoded User Input:", encodedUserInput);
 
+            // Check if the entered and encoded passwords match
             if (encodedUserInput === encodedPassword) {
                 sessionStorage.setItem('passwordEntered', 'true');
-                document.getElementById("content").style.display = "block";
+                document.getElementById("content").style.display = "block"; // Show the content
             } else {
                 alert("Incorrect password. Redirecting...");
                 window.location.href = "about:blank"; // Prevent bypass by redirecting to a blank page
@@ -201,14 +209,3 @@
     <footer>
         <div class="footer-links">
             <a href="#" onclick="loadDMCA(); return false;">DMCA</a>
-            <a href="#" onclick="showContact(); return false;">Contact</a>
-            <a href="#" onclick="loadPrivacy(); return false;">Privacy Policy</a>
-            <a href="javascript:saveData()">Export Data</a>
-            <a href="#" onclick="document.getElementById('importData').click(); return false;">Import Data</a>
-            <input type="file" id="importData" style="display: none;" onchange="loadData(event)">
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
