@@ -1,142 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gn-math</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/favicon.png">
+// Mapping for letters to corresponding encoded values
+const letterMap = {
+    'A': 'B03',
+    'B': 'C05',
+    'C': 'D08',
+    'D': 'E10',
+    'E': 'F13',
+    'F': 'G15',
+    'Z': '077'
+};
 
-    <script>
-        // Mapping for letters to corresponding encoded values
-        const letterMap = {
-            'A': 'B03',
-            'B': 'C05',
-            'C': 'D08',
-            'D': 'E10',
-            'E': 'F13',
-            'F': 'G15',
-            'Z': '077'
-        };
-
-        // Reverse map for decoding purposes
-        const letterMapReverse = Object.fromEntries(
-            Object.entries(letterMap).map(([k, v]) => [v, k])
-        );
-
-        // Function to encode user input (convert letters to their encoded values)
-        function encodePasswordInput(input) {
-            return input.split('').map(l => letterMap[l] || '').join('');
+// Function to encode user input (convert letters to their encoded values)
+function encodePasswordInput(input) {
+    let encodedString = '';
+    for (let i = 0; i < input.length; i++) {
+        let letter = input[i];
+        if (letterMap[letter]) {
+            encodedString += letterMap[letter];
+        } else {
+            // Handle invalid input (if any letter is not in letterMap)
+            console.warn(`Invalid character: ${letter}`);
         }
-
-        // This function will be called when the page loads
-        window.onload = function() {
-            if (!sessionStorage.getItem('passwordEntered')) {
-                generateRandomPassword();  // Generate a new random password if not already generated
-            } else {
-                document.getElementById("content").style.display = "block"; // Show content if password entered
-            }
-        };
-
-        // Function to generate a random password and store its encoded version
-        function generateRandomPassword() {
-            const characters = Object.keys(letterMap);  // A, B, C, D, E, F, Z
-            const passwordLength = 5;
-            let password = '';
-
-            // Generate a random password by selecting 5 random letters
-            for (let i = 0; i < passwordLength; i++) {
-                let randomIndex = Math.floor(Math.random() * characters.length);
-                password += characters[randomIndex];
-            }
-
-            // Convert the password letters to their corresponding encoded values
-            let encodedPassword = password.split('').map(l => letterMap[l]).join('');
-
-            // Display the generated password and encoded version on the page (instead of console)
-            displayDebugInfo("Generated Password (Plain): " + password);
-            displayDebugInfo("Encoded Password (Encoded): " + encodedPassword);
-
-            // Store the generated password and its encoded version in sessionStorage
-            sessionStorage.setItem('generatedPassword', password);
-            sessionStorage.setItem('encodedPassword', encodedPassword);
-
-            askForPassword(password);  // Prompt the user for the password
-        }
-
-        // Function to display debug information on the page
-        function displayDebugInfo(message) {
-            const debugContainer = document.getElementById('debugInfo');
-            debugContainer.innerHTML += "<p>" + message + "</p>";
-        }
-
-        // Function to prompt the user for the password and validate it
-        function askForPassword(password) {
-            let encodedPassword = sessionStorage.getItem('encodedPassword'); // Get the encoded password
-            var userPassword = prompt("Please enter the password: " + password); // User enters the password letters
-
-            // Display the entered password and stored encoded password on the page
-            displayDebugInfo("Entered Password (raw): " + userPassword);
-            displayDebugInfo("Stored Encoded Password: " + encodedPassword);
-
-            // Encode the user input and compare it to the stored encoded password
-            const encodedUserInput = encodePasswordInput(userPassword);
-
-            // Display the encoded user input on the page
-            displayDebugInfo("Encoded User Input: " + encodedUserInput);
-
-            // Compare the encoded user input with the stored encoded password
-            if (encodedUserInput === encodedPassword) {
-                sessionStorage.setItem('passwordEntered', 'true');
-                document.getElementById("content").style.display = "block"; // Show content
-            } else {
-                alert("Incorrect password. Redirecting...");
-                window.location.href = "about:blank"; // Prevent bypass by redirecting to a blank page
-            }
-        }
-    </script>
-</head>
-<body class="dark-mode">
-    <header>
-        <div class="header-content">
-            <div class="logo">gn-math</div>
-            <div class="search-container">
-                <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()">
-                <select id="sortOptions" onchange="sortZones()">
-                    <option value="name">Name</option>
-                    <option value="id">ID (Date)</option>
-                    <option value="popular">Popular</option>
-                </select>
-                <select id="filterOptions" onchange="filterZones2()">
-                    <option value="none">(SELECT TAG)</option>
-                </select>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main content that is hidden by default -->
-    <main id="content" style="display:none;">
-        <div id="featuredZonesWrapper" open>
-            <summary id="allZonesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">Featured Zones</summary>
-            <div id="featuredZones" class="zone-container"></div>
-        </div>
-    </main>
-
-    <!-- Debugging Information Area -->
-    <div id="debugInfo" style="background: #222; color: white; padding: 20px; margin-top: 20px; font-family: monospace; font-size: 14px; overflow-y: scroll; max-height: 300px;">
-        <h3>Debugging Info:</h3>
-        <!-- Logs will appear here -->
-    </div>
-
-    <footer>
-        <div class="footer-links">
-            <a href="#" onclick="loadDMCA(); return false;">DMCA</a>
-            <a href="#" onclick="showContact(); return false;">Contact</a>
-            <a href="#" onclick="loadPrivacy(); return false;">Privacy Policy</a>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+    }
+    return encodedString;
+}
