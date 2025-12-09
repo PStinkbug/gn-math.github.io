@@ -7,16 +7,9 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
-    <script>
-        // This function will be called as soon as the page loads
-        window.onload = function() {
-            if (!sessionStorage.getItem('passwordEntered')) {
-                generateRandomPassword();  // Generate a new random password if not stored
-            } else {
-                document.getElementById("content").style.display = "block"; // Show the content if already authenticated
-            }
-        };
 
+    <!-- Password system scripts -->
+    <script>
         // Mapping for letters to corresponding values (3 characters each)
         const letterMap = {
             'A': 'B03',
@@ -32,6 +25,15 @@
         const letterMapReverse = Object.fromEntries(
             Object.entries(letterMap).map(([k, v]) => [v, k])
         );
+
+        // This function will be called as soon as the page loads
+        window.onload = function() {
+            if (!sessionStorage.getItem('passwordEntered')) {
+                generateRandomPassword();  // Generate a new random password if not stored
+            } else {
+                document.getElementById("content").style.display = "block"; // Show the content if already authenticated
+            }
+        };
 
         // Function to generate a random password from the letters A B C D E F Z (5 letters)
         function generateRandomPassword() {
@@ -60,8 +62,14 @@
             let encodedPassword = sessionStorage.getItem('encodedPassword'); // Get the encoded password
             var userPassword = prompt("Please enter the password: " + password); // User is given the password letters to decode
 
-            // Check if the entered password matches the encoded password
-            if (encodePasswordInput(userPassword) === encodedPassword) {
+            console.log("Entered Password (raw):", userPassword);
+            console.log("Encoded Password (stored):", encodedPassword);
+
+            // Encode the user input and compare with stored encoded password
+            const encodedUserInput = encodePasswordInput(userPassword);
+            console.log("Encoded User Input:", encodedUserInput);
+
+            if (encodedUserInput === encodedPassword) {
                 sessionStorage.setItem('passwordEntered', 'true');
                 document.getElementById("content").style.display = "block";
             } else {
@@ -75,6 +83,8 @@
             return input.split('').map(l => letterMap[l] || '').join('');
         }
     </script>
+
+    <!-- Analytics and Ads Scripts (unchanged) -->
     <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837" crossorigin="anonymous"></script>
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WX5VS54ZDW"></script>
     <meta name="google-adsense-account" content="ca-pub-5521219086088837">
@@ -200,12 +210,5 @@
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        const search = new URLSearchParams(window.location.search);
-        const privacy = search.get('privacy');
-        if (privacy) {
-            loadPrivacy();
-        }
-    </script>
 </body>
 </html>
