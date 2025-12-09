@@ -40,18 +40,25 @@
                 password += characters[randomIndex];
             }
 
-            // Convert the password letters to their corresponding values
-            let encodedPassword = password.split('').map(letter => letterMap[letter]).join('-');
+            // Store the random password in sessionStorage
+            sessionStorage.setItem('generatedPassword', password);
 
-            // Store the generated password in sessionStorage
-            sessionStorage.setItem('generatedPassword', encodedPassword);
-            askForPassword(encodedPassword);
+            // Convert the password letters to their corresponding values
+            let encodedPassword = password.split('').map(letter => letterMap[letter]).join('');
+            
+            // Store the encoded password for validation
+            sessionStorage.setItem('encodedPassword', encodedPassword);
+
+            askForPassword(password);  // Show password prompt with letters
         }
 
         // Function to prompt for the password and validate it
-        function askForPassword(encodedPassword) {
-            var userPassword = prompt("Please enter the password: " + encodedPassword);
-            if (userPassword === encodedPassword) {
+        function askForPassword(password) {
+            let encodedPassword = sessionStorage.getItem('encodedPassword'); // Get the encoded password
+            var userPassword = prompt("Please enter the password: " + password);
+            
+            // Check if the entered password matches the encoded password
+            if (encodePasswordInput(userPassword) === encodedPassword) {
                 // If password is correct, show the content and store flag in sessionStorage
                 sessionStorage.setItem('passwordEntered', 'true');
                 document.getElementById("content").style.display = "block";
@@ -60,6 +67,26 @@
                 alert("Incorrect password. Redirecting...");
                 window.location.href = "about:blank"; // Prevent bypass by redirecting to a blank page
             }
+        }
+
+        // Function to encode user input into mapped values
+        function encodePasswordInput(input) {
+            const letterMapReverse = {
+                'B3': 'A',
+                'C5': 'B',
+                'D8': 'C',
+                'E10': 'D',
+                'F13': 'E',
+                'G15': 'F',
+                '77': 'Z'
+            };
+            
+            let inputLetters = '';
+            for (let i = 0; i < input.length; i += 3) {
+                let segment = input.slice(i, i + 3); // Extract 3 characters (like B3, C5, etc.)
+                inputLetters += letterMapReverse[segment] || ''; // Convert mapped value to letter
+            }
+            return inputLetters;
         }
     </script>
     <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837" crossorigin="anonymous"></script>
