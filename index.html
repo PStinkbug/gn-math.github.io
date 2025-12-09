@@ -58,23 +58,17 @@
         <link rel="stylesheet" href="style.css">
         
         <script>
-            // Check if password was entered in localStorage, if not, prompt the user
+            // Function to prompt for password and check it
             window.onload = function() {
-                if (!localStorage.getItem('passwordEntered')) {
-                    checkPassword(); // Trigger password prompt if not entered yet
-                } else {
-                    document.getElementById("content").style.display = "block"; // Show content if password entered
-                }
+                checkPassword(); // Always prompt for the password on page load
             };
 
-            // Function to prompt for password and check it
             function checkPassword() {
                 var password = prompt("Please enter the password:");
                 if (password === "44554455") {
-                    localStorage.setItem('passwordEntered', 'true'); // Store password entry status
                     document.getElementById("content").style.display = "block"; // Show content if correct password
                 } else {
-                    alert("HA YOU REALLY THOUGHT DIDN'T YOU!!");
+                    alert("Incorrect password. Redirecting...");
                     window.location.href = "about:blank"; // Redirect to a blank page if incorrect password
                 }
             }
