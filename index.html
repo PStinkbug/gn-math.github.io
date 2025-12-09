@@ -8,9 +8,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
 
-    <!-- Password system scripts -->
     <script>
-        // Mapping for letters to corresponding values (3 characters each)
+        // Mapping for letters to corresponding encoded values
         const letterMap = {
             'A': 'B03',
             'B': 'C05',
@@ -21,21 +20,26 @@
             'Z': '077'
         };
 
-        // Reverse map for decoding
+        // Reverse map for decoding purposes
         const letterMapReverse = Object.fromEntries(
             Object.entries(letterMap).map(([k, v]) => [v, k])
         );
 
-        // This function will be called as soon as the page loads
+        // Function to encode user input (convert letters to their encoded values)
+        function encodePasswordInput(input) {
+            return input.split('').map(l => letterMap[l] || '').join('');
+        }
+
+        // This function will be called when the page loads
         window.onload = function() {
             if (!sessionStorage.getItem('passwordEntered')) {
-                generateRandomPassword();  // Generate a new random password if not stored
+                generateRandomPassword();  // Generate a new random password if not already generated
             } else {
-                document.getElementById("content").style.display = "block"; // Show the content if already authenticated
+                document.getElementById("content").style.display = "block"; // Show content if password entered
             }
         };
 
-        // Function to generate a random password from the letters A B C D E F Z (5 letters)
+        // Function to generate a random password and store its encoded version
         function generateRandomPassword() {
             const characters = Object.keys(letterMap);  // A, B, C, D, E, F, Z
             const passwordLength = 5;
@@ -50,9 +54,9 @@
             // Convert the password letters to their corresponding encoded values
             let encodedPassword = password.split('').map(l => letterMap[l]).join('');
 
-            // Debugging: Log the generated password and encoded version
-            console.log("Generated Password (Plain):", password);
-            console.log("Encoded Password (Encoded):", encodedPassword);
+            // Display the generated password and encoded version on the page (instead of console)
+            displayDebugInfo("Generated Password (Plain): " + password);
+            displayDebugInfo("Encoded Password (Encoded): " + encodedPassword);
 
             // Store the generated password and its encoded version in sessionStorage
             sessionStorage.setItem('generatedPassword', password);
@@ -61,70 +65,37 @@
             askForPassword(password);  // Prompt the user for the password
         }
 
-        // Function to prompt for the password and validate it
+        // Function to display debug information on the page
+        function displayDebugInfo(message) {
+            const debugContainer = document.getElementById('debugInfo');
+            debugContainer.innerHTML += "<p>" + message + "</p>";
+        }
+
+        // Function to prompt the user for the password and validate it
         function askForPassword(password) {
             let encodedPassword = sessionStorage.getItem('encodedPassword'); // Get the encoded password
-            var userPassword = prompt("Please enter the password: " + password); // User is given the password letters to decode
+            var userPassword = prompt("Please enter the password: " + password); // User enters the password letters
 
-            // Debugging: Log user input and encoded values
-            console.log("Entered Password (raw):", userPassword);
-            console.log("Encoded Password (stored):", encodedPassword);
+            // Display the entered password and stored encoded password on the page
+            displayDebugInfo("Entered Password (raw): " + userPassword);
+            displayDebugInfo("Stored Encoded Password: " + encodedPassword);
 
-            // Encode the user input and compare with stored encoded password
+            // Encode the user input and compare it to the stored encoded password
             const encodedUserInput = encodePasswordInput(userPassword);
 
-            // Debugging: Log the encoded version of the user's input
-            console.log("Encoded User Input:", encodedUserInput);
+            // Display the encoded user input on the page
+            displayDebugInfo("Encoded User Input: " + encodedUserInput);
 
-            // Check if the entered and encoded passwords match
+            // Compare the encoded user input with the stored encoded password
             if (encodedUserInput === encodedPassword) {
                 sessionStorage.setItem('passwordEntered', 'true');
-                document.getElementById("content").style.display = "block"; // Show the content
+                document.getElementById("content").style.display = "block"; // Show content
             } else {
                 alert("Incorrect password. Redirecting...");
                 window.location.href = "about:blank"; // Prevent bypass by redirecting to a blank page
             }
         }
-
-        // Function to encode user input into mapped values
-        function encodePasswordInput(input) {
-            return input.split('').map(l => letterMap[l] || '').join('');
-        }
     </script>
-
-    <!-- Analytics and Ads Scripts (unchanged) -->
-    <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837" crossorigin="anonymous"></script>
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WX5VS54ZDW"></script>
-    <meta name="google-adsense-account" content="ca-pub-5521219086088837">
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', 'G-WX5VS54ZDW');
-    </script>
-    <script async src="https://fundingchoicesmessages.google.com/i/pub-5521219086088837?ers=1"></script>
-    <script>
-        (function() {
-            function signalGooglefcPresent() {
-                if (!window.frames['googlefcPresent']) {
-                    if (document.body) {
-                        const iframe = document.createElement('iframe');
-                        iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
-                        iframe.style.display = 'none';
-                        iframe.name = 'googlefcPresent';
-                        document.body.appendChild(iframe);
-                    } else {
-                        setTimeout(signalGooglefcPresent, 0);
-                    }
-                }
-            }
-            signalGooglefcPresent();
-        })();
-    </script>
-    <script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-mode">
     <header>
@@ -141,71 +112,31 @@
                     <option value="none">(SELECT TAG)</option>
                 </select>
             </div>
-            <div class="control-buttons">
-                <button id="refresh" class="control-button" title="Refresh all the zones" onclick="listZones()">
-                    <img src="refresh-icon.png" alt="refresh">
-                </button>
-
-                <button id="settings" class="control-button" title="Settings!">
-                    <img src="setting.png" alt="settings">
-                </button>
-            </div>
         </div>
     </header>
 
-    <ins class="adsbygoogle"
-        style="display:block; text-align:center;"
-        data-ad-client="ca-pub-5521219086088837"
-        data-ad-slot="5549138288"
-        data-ad-format="auto"
-        data-full-width-responsive="true"></ins>
-
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-
     <!-- Main content that is hidden by default -->
     <main id="content" style="display:none;">
-        <details id="featuredZonesWrapper" open>
+        <div id="featuredZonesWrapper" open>
             <summary id="allZonesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">Featured Zones</summary>
             <div id="featuredZones" class="zone-container"></div>
-        </details>
-        <br><hr><br>
-        <details id="allZonesWrapper" open>
-            <summary id="allSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">All Zones</summary>
-            <div id="container">Loading...</div>
-        </details>
+        </div>
     </main>
 
-    <div id="zoneViewer">
-        <div class="zone-header">
-            <div class="zone-title">
-                <h2 id="zoneName">zone</h2>
-                <span id="zoneId" style="display: none;"></span>
-                <a id="zoneAuthor" href="#" target="_blank">by Author</a>
-            </div>
-            <div class="zone-controls">
-                <button onclick="fullscreenZone()">Fullscreen</button>
-                <button onclick="aboutBlank()">Open in New Tab</button>
-                <button onclick="downloadZone()">Download</button>
-                <button onclick="closeZone()">Close</button>
-            </div>
-        </div>
-        <iframe id="zoneFrame"></iframe>
-    </div>
-
-    <div id="popupOverlay">
-        <div class="popup">
-            <div class="popup-header">
-                <h3 id="popupTitle">Title</h3>
-                <button id="popupClose" onclick="closePopup()">×</button>
-            </div>
-            <div id="popupBody">
-                Content will be here
-            </div>
-        </div>
+    <!-- Debugging Information Area -->
+    <div id="debugInfo" style="background: #222; color: white; padding: 20px; margin-top: 20px; font-family: monospace; font-size: 14px; overflow-y: scroll; max-height: 300px;">
+        <h3>Debugging Info:</h3>
+        <!-- Logs will appear here -->
     </div>
 
     <footer>
         <div class="footer-links">
             <a href="#" onclick="loadDMCA(); return false;">DMCA</a>
+            <a href="#" onclick="showContact(); return false;">Contact</a>
+            <a href="#" onclick="loadPrivacy(); return false;">Privacy Policy</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
