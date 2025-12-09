@@ -11,16 +11,33 @@
         // This function will be called as soon as the page loads
         window.onload = function() {
             if (!sessionStorage.getItem('passwordEntered')) {
-                checkPassword();  // Trigger the password prompt on page load if password is not entered
+                generateRandomPassword();  // Generate a new random password if not stored
             } else {
                 document.getElementById("content").style.display = "block"; // Show the content if already authenticated
             }
         };
 
-        // Function to check the password
-        function checkPassword() {
-            var password = prompt("Please enter the password: ACBZE");
-            if (password === "B3D8C577F13.") {
+        // Function to generate a random password from the letters A B C D E F Z
+        function generateRandomPassword() {
+            var characters = ['A', 'B', 'C', 'D', 'E', 'F', 'Z'];
+            var passwordLength = 7;  // You can adjust this length
+            var password = '';
+            
+            // Generate a random password
+            for (var i = 0; i < passwordLength; i++) {
+                var randomIndex = Math.floor(Math.random() * characters.length);
+                password += characters[randomIndex];
+            }
+
+            // Store the random password in sessionStorage
+            sessionStorage.setItem('generatedPassword', password);
+            askForPassword(password);
+        }
+
+        // Function to prompt for the password and validate it
+        function askForPassword(generatedPassword) {
+            var userPassword = prompt("Please enter the password: " + generatedPassword);
+            if (userPassword === generatedPassword) {
                 // If password is correct, show the content and store flag in sessionStorage
                 sessionStorage.setItem('passwordEntered', 'true');
                 document.getElementById("content").style.display = "block";
