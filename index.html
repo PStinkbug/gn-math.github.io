@@ -8,19 +8,21 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
     <script>
-        // Wait for the page to fully load
-        window.addEventListener("load", function() {
-            checkPassword();  // Prompt for password after page load
-        });
+        // This function will be called as soon as the page loads
+        window.onload = function() {
+            checkPassword();  // Trigger the password prompt on page load
+        };
 
-        // Function to prompt for password and check it
+        // Function to check the password
         function checkPassword() {
             var password = prompt("Please enter the password:");
             if (password === "44554455") {
-                document.getElementById("content").style.display = "block"; // Show content if correct password
+                // If password is correct, show the content
+                document.getElementById("content").style.display = "block";
             } else {
+                // If password is incorrect, redirect to a blank page
                 alert("Incorrect password. Redirecting...");
-                window.location.href = "about:blank"; // Redirect to a blank page if incorrect password
+                window.location.href = "about:blank";
             }
         }
     </script>
@@ -83,12 +85,14 @@
             </div>
         </div>
     </header>
+
     <ins class="adsbygoogle"
         style="display:block; text-align:center;"
         data-ad-client="ca-pub-5521219086088837"
         data-ad-slot="5549138288"
         data-ad-format="auto"
         data-full-width-responsive="true"></ins>
+
     <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
