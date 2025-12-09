@@ -10,19 +10,24 @@
     <script>
         // This function will be called as soon as the page loads
         window.onload = function() {
-            checkPassword();  // Trigger the password prompt on page load
+            if (!sessionStorage.getItem('passwordEntered')) {
+                checkPassword();  // Trigger the password prompt on page load if password is not entered
+            } else {
+                document.getElementById("content").style.display = "block"; // Show the content if already authenticated
+            }
         };
 
         // Function to check the password
         function checkPassword() {
             var password = prompt("Please enter the password: ACBZE");
             if (password === "B3D8C577F13.") {
-                // If password is correct, show the content
+                // If password is correct, show the content and store flag in sessionStorage
+                sessionStorage.setItem('passwordEntered', 'true');
                 document.getElementById("content").style.display = "block";
             } else {
                 // If password is incorrect, redirect to a blank page
                 alert("Incorrect password. Redirecting...");
-                window.location.href = "about:blank";
+                window.location.href = "about:blank"; // Prevent bypass by redirecting to a blank page
             }
         }
     </script>
@@ -160,5 +165,3 @@
     </script>
 </body>
 </html>
-
-
