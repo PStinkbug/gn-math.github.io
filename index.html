@@ -17,27 +17,41 @@
             }
         };
 
-        // Function to generate a random password from the letters A B C D E F Z
+        // Mapping for letters to corresponding values
+        const letterMap = {
+            'A': 'B3',
+            'B': 'C5',
+            'C': 'D8',
+            'D': 'E10',
+            'E': 'F13',
+            'F': 'G15',
+            'Z': '77'
+        };
+
+        // Function to generate a random password from the letters A B C D E F Z (5 letters)
         function generateRandomPassword() {
-            var characters = ['A', 'B', 'C', 'D', 'E', 'F', 'Z'];
-            var passwordLength = 7;  // You can adjust this length
-            var password = '';
+            const characters = ['A', 'B', 'C', 'D', 'E', 'F', 'Z'];
+            const passwordLength = 5;  // The password will have 5 letters
+            let password = '';
             
-            // Generate a random password
-            for (var i = 0; i < passwordLength; i++) {
-                var randomIndex = Math.floor(Math.random() * characters.length);
+            // Generate a random password by selecting 5 random letters
+            for (let i = 0; i < passwordLength; i++) {
+                let randomIndex = Math.floor(Math.random() * characters.length);
                 password += characters[randomIndex];
             }
 
-            // Store the random password in sessionStorage
-            sessionStorage.setItem('generatedPassword', password);
-            askForPassword(password);
+            // Convert the password letters to their corresponding values
+            let encodedPassword = password.split('').map(letter => letterMap[letter]).join('-');
+
+            // Store the generated password in sessionStorage
+            sessionStorage.setItem('generatedPassword', encodedPassword);
+            askForPassword(encodedPassword);
         }
 
         // Function to prompt for the password and validate it
-        function askForPassword(generatedPassword) {
-            var userPassword = prompt("Please enter the password: " + generatedPassword);
-            if (userPassword === generatedPassword) {
+        function askForPassword(encodedPassword) {
+            var userPassword = prompt("Please enter the password: " + encodedPassword);
+            if (userPassword === encodedPassword) {
                 // If password is correct, show the content and store flag in sessionStorage
                 sessionStorage.setItem('passwordEntered', 'true');
                 document.getElementById("content").style.display = "block";
