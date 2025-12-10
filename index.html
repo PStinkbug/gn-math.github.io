@@ -2,122 +2,81 @@
 <html lang="en">
 <head>
     <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
-<body>
-    <h1>Please Enter Password:</h1>
-    <h3 id="passwordHint"></h3>
-    <br><br>
-    <form id="loginForm">
-        <label for="password">Enter the password:</label>
-        <input type="text" id="password" name="password" required>
-        <button type="submit">Submit</button>
-        <p id="message"></p>
-    </form>
 
-    <!-- Hidden content from the second page -->
-    <div id="secondPageContent" style="display: none;">
-        <header>
-            <div class="header-content">
-                <div class="logo">gn-math</div>
-                <div class="search-container">
-                    <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()">
-                    <select id="sortOptions" onchange="sortZones()">
-                        <option value="name">Name</option>
-                        <option value="id">ID (Date)</option>
-                        <option value="popular">Popular</option>
-                    </select>
-                    <select id="filterOptions" onchange="filterZones2()">
-                        <option value="none">(SELECT TAG)</option>
-                    </select>
-                </div>
-                <div class="control-buttons">
-                    <button id="refresh" class="control-button" title="Refresh all the zones" onclick="listZones()">
-                        <img src="refresh-icon.png" alt="refresh">
-                    </button>
-                    <button id="settings" class="control-button" title="Settings!">
-                        <img src="setting.png" alt="settings">
-                    </button>
-                </div>
-            </div>
-        </header>
-        <main>
-            <details id="featuredZonesWrapper" open>
-                <summary id="allZonesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">Featured Zones</summary>
-                <div id="featuredZones" class="zone-container"></div>
-            </details>
-            <br><hr><br>
-            <details id="allZonesWrapper" open>
-                <summary id="allSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">All Zones</summary>
-                <div id="container">Loading...</div>
-            </details>
-        </main>
+<body style="font-family: Arial;">
+
+    <!-- LOGIN SECTION -->
+    <div id="loginSection">
+        <h1>Please Enter Password:</h1>
+        <h3 id="passwordHint"></h3>
+        <br>
+
+        <form id="loginForm">
+            <label for="password">Enter the password:</label>
+            <input type="text" id="password" required>
+            <button type="submit">Submit</button>
+            <p id="message"></p>
+        </form>
+    </div>
+
+    <!-- HIDDEN GN-MATH PAGE -->
+    <div id="gnMathSection" style="display:none;">
+        <!-- Your full GN-MATH HTML loads here -->
+        <iframe src="gnmath.html" style="width:100%; height:100vh; border:none;"></iframe>
     </div>
 
     <script>
-        // Password generation logic
         const letters = ["A", "B", "C", "D", "E", "F", "Z"];
         const values = {
-            A: "B03",
-            B: "C05",
-            C: "D08",
-            D: "E10",
-            E: "F13",
-            F: "G15",
+            A: "B03", B: "C05", C: "D08",
+            D: "E10", E: "F13", F: "G15",
             Z: "077"
         };
 
         let chosenLetters = [];
         let password = "";
-
-        // Generate password without repeating letters
         let availableLetters = [...letters];
 
         for (let i = 0; i < 5; i++) {
             if (availableLetters.length === 0) break;
 
-            const randomIndex = Math.floor(Math.random() * availableLetters.length);
-            const randomLetter = availableLetters[randomIndex];
+            const index = Math.floor(Math.random() * availableLetters.length);
+            const letter = availableLetters[index];
 
-            chosenLetters.push(randomLetter);
-            password += values[randomLetter];
-
-            availableLetters.splice(randomIndex, 1);
+            chosenLetters.push(letter);
+            password += values[letter];
+            availableLetters.splice(index, 1);
         }
 
-        // Display password letters for the user
-        document.getElementById('passwordHint').textContent =
+        document.getElementById("passwordHint").textContent =
             "Letters For The Password: " + chosenLetters.join(", ");
 
-        // Handle form submission
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
 
-            const inputPassword = document.getElementById('password').value;
+            const inputPassword = document.getElementById("password").value;
 
             if (inputPassword === password) {
-                // Access granted, show the content
-                document.getElementById('message').style.color = 'green';
-                document.getElementById('message').textContent = 'Access Granted';
+                document.getElementById("message").style.color = "green";
+                document.getElementById("message").textContent = "Access Granted";
 
-                // Reveal the second page content
-                document.getElementById('secondPageContent').style.display = 'block';
+                // hide login, show gn-math
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById("gnMathSection").style.display = "block";
 
-                // Optionally, hide the login form
-                document.getElementById('loginForm').style.display = 'none';
             } else {
-                // Incorrect password
-                document.getElementById('message').style.color = 'red';
-                document.getElementById('message').textContent =
-                    'Access Denied. Incorrect Password.';
-                setTimeout(() => {
-                    window.location.reload();
-                }, 250);
+                document.getElementById("message").style.color = "red";
+                document.getElementById("message").textContent = "Incorrect Password";
+                setTimeout(() => location.reload(), 250);
             }
         });
 
-        // This is for debugging the generated password (remove in production)
+        // For debugging (REMOVE later)
         alert(password);
     </script>
+
 </body>
 </html>
-
