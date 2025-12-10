@@ -4,26 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GN Math</title>
-
-    <!-- Uses your existing style.css -->
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* fallback styling in case style.css fails */
         body {
             font-family: Arial, sans-serif;
-            background: #f3f3f3;
             margin: 0;
+            background: #f3f3f3;
+        }
+
+        /* Password screen */
+        #password-screen {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
             padding: 20px;
         }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
+
+        #password-screen input {
+            padding: 10px;
+            font-size: 18px;
         }
+
+        #password-screen button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #0077ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Site content */
         .container {
             max-width: 900px;
             margin: auto;
+            padding: 20px;
+            display: none; /* hidden until unlocked */
         }
+
         .card {
             background: white;
             padding: 18px;
@@ -40,38 +65,95 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1>GN Math</h1>
+<!-- PASSWORD GATE -->
+<div id="password-screen">
+    <h1>Please Enter Password:</h1>
+    <h3 id="passwordHint"></h3>
 
-        <div class="card">
-            <a href="autoupdate.html">Auto Update</a>
-        </div>
+    <input id="passwordInput" type="text" placeholder="Enter password">
+    <button id="submitPassword">Submit</button>
+    <p id="message"></p>
+</div>
 
-        <div class="card">
-            <a href="newtab.html">New Tab Mode</a>
-        </div>
+<!-- MAIN PAGE CONTENT -->
+<div class="container" id="siteContent">
+    <h1>GN Math</h1>
 
-        <div class="card">
-            <a href="singlefile.html">Single File Viewer</a>
-        </div>
+    <div class="card"><a href="autoupdate.html">Auto Update</a></div>
+    <div class="card"><a href="newtab.html">New Tab Mode</a></div>
+    <div class="card"><a href="singlefile.html">Single File Viewer</a></div>
+    <div class="card"><a href="gnmath.js">gnmath.js (script)</a></div>
+    <div class="card"><a href="script.js">script.js</a></div>
+    <div class="card"><a href="style.css">style.css</a></div>
+    <div class="card"><a href="ads.txt">ads.txt</a></div>
+</div>
 
-        <div class="card">
-            <a href="gnmath.js">gnmath.js (script)</a>
-        </div>
+<script>
+    // Cipher letters
+    const letters = ["A", "B", "C", "D", "E", "F", "Z"];
+    const values = {
+        A: "B03",
+        B: "C05",
+        C: "D08",
+        D: "E10",
+        E: "F13",
+        F: "G15",
+        Z: "077"
+    };
 
-        <div class="card">
-            <a href="script.js">script.js</a>
-        </div>
+    let chosenLetters = [];
+    let password = "";
 
-        <div class="card">
-            <a href="style.css">style.css</a>
-        </div>
+    // Create list without repeats
+    let availableLetters = [...letters];
 
-        <div class="card">
-            <a href="ads.txt">ads.txt</a>
-        </div>
+    for (let i = 0; i < 5; i++) {
+        if (availableLetters.length === 0) break;
 
-    </div>
+        const randomIndex = Math.floor(Math.random() * availableLetters.length);
+        const randomLetter = availableLetters[randomIndex];
+
+        chosenLetters.push(randomLetter);
+        password += values[randomLetter];
+
+        availableLetters.splice(randomIndex, 1);
+    }
+
+    // Display hint letters
+    document.getElementById("passwordHint").textContent =
+        "Letters for the password: " + chosenLetters.join(", ");
+
+    // Password submit
+    const btn = document.getElementById("submitPassword");
+    const input = document.getElementById("passwordInput");
+    const msg = document.getElementById("message");
+
+    btn.onclick = () => {
+        if (input.value === password) {
+            msg.style.color = "green";
+            msg.textContent = "Access Granted";
+
+            // Unlock page
+            document.getElementById("password-screen").style.display = "none";
+            document.getElementById("siteContent").style.display = "block";
+        } else {
+            msg.style.color = "red";
+            msg.textContent = "Access Denied. Incorrect Password.";
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 250);
+        }
+    };
+
+    // Enter key submits
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") btn.click();
+    });
+
+    // Show generated password (remove if you don’t want the popup)
+    alert(password);
+</script>
 
 </body>
 </html>
