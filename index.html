@@ -14,8 +14,47 @@
         <p id="message"></p>
     </form>
 
+    <!-- Hidden content from the second page -->
+    <div id="secondPageContent" style="display: none;">
+        <header>
+            <div class="header-content">
+                <div class="logo">gn-math</div>
+                <div class="search-container">
+                    <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()">
+                    <select id="sortOptions" onchange="sortZones()">
+                        <option value="name">Name</option>
+                        <option value="id">ID (Date)</option>
+                        <option value="popular">Popular</option>
+                    </select>
+                    <select id="filterOptions" onchange="filterZones2()">
+                        <option value="none">(SELECT TAG)</option>
+                    </select>
+                </div>
+                <div class="control-buttons">
+                    <button id="refresh" class="control-button" title="Refresh all the zones" onclick="listZones()">
+                        <img src="refresh-icon.png" alt="refresh">
+                    </button>
+                    <button id="settings" class="control-button" title="Settings!">
+                        <img src="setting.png" alt="settings">
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <details id="featuredZonesWrapper" open>
+                <summary id="allZonesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">Featured Zones</summary>
+                <div id="featuredZones" class="zone-container"></div>
+            </details>
+            <br><hr><br>
+            <details id="allZonesWrapper" open>
+                <summary id="allSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">All Zones</summary>
+                <div id="container">Loading...</div>
+            </details>
+        </main>
+    </div>
+
     <script>
-        // Making The Values
+        // Password generation logic
         const letters = ["A", "B", "C", "D", "E", "F", "Z"];
         const values = {
             A: "B03",
@@ -49,20 +88,24 @@
         document.getElementById('passwordHint').textContent =
             "Letters For The Password: " + chosenLetters.join(", ");
 
-        // Form submit event
+        // Handle form submission
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const inputPassword = document.getElementById('password').value;
 
             if (inputPassword === password) {
+                // Access granted, show the content
                 document.getElementById('message').style.color = 'green';
                 document.getElementById('message').textContent = 'Access Granted';
-                // Redirect to the second page after password is correct
-                setTimeout(() => {
-                    window.location.href = "gn-math.html"; // Redirect to second page
-                }, 500);
+
+                // Reveal the second page content
+                document.getElementById('secondPageContent').style.display = 'block';
+
+                // Optionally, hide the login form
+                document.getElementById('loginForm').style.display = 'none';
             } else {
+                // Incorrect password
                 document.getElementById('message').style.color = 'red';
                 document.getElementById('message').textContent =
                     'Access Denied. Incorrect Password.';
@@ -71,9 +114,10 @@
                 }, 250);
             }
         });
-        
-        // This is just for debugging purposes, you can remove it in production
-        alert(password); 
+
+        // This is for debugging the generated password (remove in production)
+        alert(password);
     </script>
 </body>
 </html>
+
