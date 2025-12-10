@@ -1,20 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GN Math</title>
-    <link rel="stylesheet" href="style.css" />
+
+    <!-- Uses your existing style.css -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* fallback styling in case style.css fails */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f3f3;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        .card {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .card a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #0077ff;
+        }
+    </style>
 </head>
 <body>
-    <h1>GN Math</h1>
 
-    <div class="game-list">
-        <a href="autoupdate.html">Auto Update</a>
-        <a href="newtab.html">New Tab Mode</a>
-        <a href="singlefile.html">Single File Viewer</a>
+    <div class="container">
+        <h1>GN Math</h1>
+
+        <div class="card">
+            <a href="autoupdate.html">Auto Update</a>
+        </div>
+
+        <div class="card">
+            <a href="newtab.html">New Tab Mode</a>
+        </div>
+
+        <div class="card">
+            <a href="singlefile.html">Single File Viewer</a>
+        </div>
+
+        <div class="card">
+            <a href="gnmath.js">gnmath.js (script)</a>
+        </div>
+
+        <div class="card">
+            <a href="script.js">script.js</a>
+        </div>
+
+        <div class="card">
+            <a href="style.css">style.css</a>
+        </div>
+
+        <div class="card">
+            <a href="ads.txt">ads.txt</a>
+        </div>
+
     </div>
 
-    <script src="script.js"></script>
 </body>
 </html>
