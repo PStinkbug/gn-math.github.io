@@ -1,130 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gn-math</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Please Enter Password:</h1>
+    <h3 id="passwordHint"></h3>
+    <br><br>
+    <form id="loginForm">
+        <label for="password">Enter the password:</label>
+        <input type="text" id="password" name="password" required>
+        <button type="submit">Submit</button>
+        <p id="message"></p>
+    </form>
 
     <script>
-        // Mapping for letters to corresponding encoded values
-        const letterMap = {
-            'A': 'B03',
-            'B': 'C05',
-            'C': 'D08',
-            'D': 'E10',
-            'E': 'F13',
-            'F': 'G15',
-            'Z': '077'
+        // Making The Values
+        const letters = ["A", "B", "C", "D", "E", "F", "Z"];
+        const values = {
+            A: "B03",
+            B: "C05",
+            C: "D08",
+            D: "E10",
+            E: "F13",
+            F: "G15",
+            Z: "077"
         };
 
-        // Function to encode user input (convert letters to their encoded values)
-        function encodePasswordInput(input) {
-            let encodedString = '';
-            for (let i = 0; i < input.length; i++) {
-                let letter = input[i];
-                if (letterMap[letter]) {
-                    encodedString += letterMap[letter];
-                } else {
-                    // Handle invalid input (if any letter is not in letterMap)
-                    console.warn(`Invalid character: ${letter}`);
-                }
-            }
-            return encodedString;
+        let chosenLetters = [];
+        let password = "";
+
+        // Generate password without repeating letters
+        let availableLetters = [...letters];
+
+        for (let i = 0; i < 5; i++) {
+            if (availableLetters.length === 0) break;
+
+            const randomIndex = Math.floor(Math.random() * availableLetters.length);
+            const randomLetter = availableLetters[randomIndex];
+
+            chosenLetters.push(randomLetter);
+            password += values[randomLetter];
+
+            availableLetters.splice(randomIndex, 1);
         }
 
-        // This function will be called when the page loads
-        window.onload = function() {
-            if (!sessionStorage.getItem('passwordEntered')) {
-                generateRandomPassword();  // Generate a new random password if not already generated
+        // Display password letters for the user
+        document.getElementById('passwordHint').textContent =
+            "Letters For The Password: " + chosenLetters.join(", ");
+
+        // Form submit event
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const inputPassword = document.getElementById('password').value;
+
+            if (inputPassword === password) {
+                document.getElementById('message').style.color = 'green';
+                document.getElementById('message').textContent = 'Access Granted';
+                // Redirect to the second page after password is correct
+                setTimeout(() => {
+                    window.location.href = "gn-math.html"; // Redirect to second page
+                }, 500);
             } else {
-                document.getElementById("content").style.display = "block"; // Show content if password entered
+                document.getElementById('message').style.color = 'red';
+                document.getElementById('message').textContent =
+                    'Access Denied. Incorrect Password.';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 250);
             }
-        };
-
-        // Function to generate a random password and store its encoded version
-        function generateRandomPassword() {
-            const characters = Object.keys(letterMap);  // A, B, C, D, E, F, Z
-            const passwordLength = 5;
-            let password = '';
-
-            // Generate a random password by selecting 5 random letters
-            for (let i = 0; i < passwordLength; i++) {
-                let randomIndex = Math.floor(Math.random() * characters.length);
-                password += characters[randomIndex];
-            }
-
-            // Convert the password letters to their corresponding encoded values
-            let encodedPassword = encodePasswordInput(password);
-
-            // Store the generated password and its encoded version in sessionStorage
-            sessionStorage.setItem('generatedPassword', password);
-            sessionStorage.setItem('encodedPassword', encodedPassword);
-
-            askForPassword(password);  // Prompt the user for the password
-        }
-
-        // Function to display debug information on the page
-        function displayDebugInfo(message) {
-            const debugContainer = document.getElementById('debugInfo');
-            debugContainer.innerHTML += "<p>" + message + "</p>";
-        }
-
-        // Function to prompt the user for the password and validate it
-        function askForPassword(password) {
-            let encodedPassword = sessionStorage.getItem('encodedPassword'); // Get the encoded password
-            let userPassword = prompt("Please enter the password: " + password).trim(); // Prompt user to enter the password
-
-            // Display the entered password and stored encoded password on the page
-            displayDebugInfo("Entered Password (raw): " + userPassword);
-            displayDebugInfo("Stored Encoded Password: " + encodedPassword);
-
-            // Encode the user input and compare it to the stored encoded password
-            const encodedUserInput = encodePasswordInput(userPassword);
-
-            // Display the encoded user input on the page
-            displayDebugInfo("Encoded User Input: " + encodedUserInput);
-
-            // Compare the encoded user input with the stored encoded password
-            if (encodedUserInput === encodedPassword) {
-                sessionStorage.setItem('passwordEntered', 'true');
-                document.getElementById("content").style.display = "block"; // Show content
-            } else {
-                alert("Incorrect password. Redirecting...");
-                window.location.href = "about:blank"; // Prevent bypass by redirecting to a blank page
-            }
-        }
+        });
+        
+        // This is just for debugging purposes, you can remove it in production
+        alert(password); 
     </script>
-</head>
-<body class="dark-mode">
-    <header>
-        <div class="header-content">
-            <div class="logo">gn-math</div>
-            <div class="search-container">
-                <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()">
-            </div>
-        </div>
-    </header>
-
-    <!-- Main content that is hidden by default -->
-    <main id="content" style="display:none;">
-        <div id="featuredZonesWrapper" open>
-            <summary id="allZonesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">Featured Zones</summary>
-            <div id="featuredZones" class="zone-container"></div>
-        </div>
-    </main>
-
-    <!-- Debugging Information Area -->
-    <div id="debugInfo" style="background: #222; color: white; padding: 20px; margin-top: 20px; font-family: monospace; font-size: 14px; overflow-y: scroll; max-height: 300px;">
-        <h3>Debugging Info:</h3>
-        <!-- Logs will appear here -->
-    </div>
-
-    <footer>
-        <div class="footer-links">
-            <a href="#">DMCA</a>
-            <a href="#">Contact</a>
-        </div>
-    </footer>
 </body>
 </html>
