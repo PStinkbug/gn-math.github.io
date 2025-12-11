@@ -305,39 +305,46 @@ function tabCloak(title, icon) {
     document.querySelector('link[rel="icon"]').href = icon;
 }
 
-// --- Initial Load Sequence (NEWLY MODIFIED) ---
-const mainContent = document.querySelector('main');
-const footerContent = document.querySelector('footer');
+// --- Initial Load Sequence (Corrected for Execution Order) ---
 
 function initializeSite() {
+    // 1. Set up all event listeners for the site controls
     initEventListeners();
     
+    // 2. Password Check Logic
+    const mainContent = document.querySelector('main');
+    const footerContent = document.querySelector('footer');
     const currentPassword = getWeeklyPassword();
     const lastUnlockedPassword = sessionStorage.getItem('last_password');
     const isUnlocked = sessionStorage.getItem('site_unlocked') === 'true';
 
+    // A. Check if the site was already unlocked with the current week's password
     if (isUnlocked && currentPassword === lastUnlockedPassword) {
-        // User is already logged in for this week's code
+        // User is logged in for this week's code
         isSiteLocked = false;
         mainContent.style.filter = 'none';
         if (footerContent) footerContent.style.filter = 'none';
+        // 3. Load the game content
         listZones(); 
     } else {
-        // Force password prompt
+        // B. Force password prompt
         isSiteLocked = true;
         
-        // Clear old session data and set up for the current week
+        // Clear old session data and store the current week's password
         sessionStorage.removeItem('site_unlocked');
         sessionStorage.setItem('last_password', currentPassword); 
         
-        // Visually obscure the content until password is entered
+        // Visually obscure the content
         mainContent.style.filter = 'blur(10px)'; 
         if (footerContent) footerContent.style.filter = 'blur(10px)';
         
-        listZones(); // Will exit immediately because isSiteLocked is true
-        showPasswordPrompt(); 
+        // Show the prompt
+        showPasswordPrompt();
+        
+        // We still call listZones, but it will exit immediately because isSiteLocked is true.
+        listZones(); 
     }
 }
 
-// Start the entire process
-initializeSite();
+// Start the entire process ONLY after the DOM is ready to prevent errors
+document.addEventListener('DOMContentLoaded', initializeSite);
